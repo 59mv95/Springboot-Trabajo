@@ -1,5 +1,7 @@
 package es.etg.daw.dawes.store.infraestructure.web.mvc.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -9,7 +11,10 @@ import es.etg.daw.dawes.store.pokemon.application.service.CreatePokemonService;
 import es.etg.daw.dawes.store.pokemon.domain.model.Pokemon;
 import es.etg.daw.dawes.store.infraestructure.mapper.PokemonMapper;
 import es.etg.daw.dawes.store.infraestructure.web.mvc.dto.PokemonRequest;
+import es.etg.daw.dawes.store.infraestructure.web.mvc.dto.PokemonResponse;
 import lombok.RequiredArgsConstructor;
+import main.java.es.etg.daw.dawes.store.pokemon.application.service.FindPokemonService;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -44,6 +49,18 @@ public class PokemonController {
               </body>
             </html>
             """.formatted(pokemon.getId(), pokemon.getNombre(), pokemon.getTipo(), pokemon.getPrecio(), pokemon.getCreatedAt());
+
+     //nuevo atributo para el servicio
+    private final FindPokemonService findPokemonService;
+
+    //Método GET
+    @GetMapping
+    @ResponseBody //Usamos esta anotación para devolver una respuesta, nuestra lista.
+    public List<PokemonResponse> allPokemon(){
+        return findPokemonService.findAll()
+              .stream() //Convierte la lista en un flujo
+                      .map(PokemonMapper::toResponse) //Mapeamos/Convertimos cada elemento del flujo (Producto) en un objeto de Respuesta (ProductoResponse)
+                      .toList(); //Lo devuelve como una lista.
     }
     
 }
